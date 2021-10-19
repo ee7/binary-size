@@ -20,7 +20,9 @@ with various sets of compilation options.
 
 ## Results
 
-As of 2021-10-19 on Arch Linux and amd64 with:
+### Arch Linux
+
+As of 2021-10-19 on amd64 with:
 - Nim 1.6.0 (released 2021-10-19)
 - gcc 11.1.0
 - clang 12.0.1
@@ -39,3 +41,19 @@ As of 2021-10-19 on Arch Linux and amd64 with:
 |       22 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static` |
 |       18 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static ` |
 |      4.8 kB | `-d:danger --gc:arc --opt:size --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='/foo/zigcc' --clang.linkerexe='/foo/zigcc' --passC:'-flto -target x86_64-linux-musl' --passL:'-flto -target x86_64-linux-musl'` |
+
+### OpenBSD 7.0 (released 2021-10-14)
+
+As of 2021-10-19 on amd64 with:
+- Nim 1.6.0 (released 2021-10-19)
+- clang 11.1.0
+
+| Binary size | Compilation options |
+| ----------: | ------------------- |
+|      119 kB | (none) |
+|       70 kB | `-d:release` |
+|       63 kB | `-d:danger` |
+|       27 kB | `-d:danger --passC:-flto --passL:-flto` |
+|       21 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
+|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc` |
+|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size` |
