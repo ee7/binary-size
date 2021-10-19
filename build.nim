@@ -1,4 +1,4 @@
-import std/[os, osproc, strformat]
+import std/[os, osproc, strformat, strutils]
 
 proc execAndCheck(cmd: string) =
   ## Runs `cmd`, and raises an exception if the exit code is non-zero.
@@ -9,15 +9,15 @@ proc execAndCheck(cmd: string) =
 
 const
   filename = "hello"
-  muslGcc = "--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static"
-  muslClang = "--cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static"
-  pathZigcc = currentSourcePath().parentDir() / "zigcc"
-  zig =
-    "--panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler " &
-    &"--cc=clang --clang.exe='{pathZigcc}' --clang.linkerexe='{pathZigcc}' " &
-    "--passC:'-flto -target x86_64-linux-musl' " &
-    "--passL:'-flto -target x86_64-linux-musl'"
-  options = [
+  binaryPath = when defined(windows): &"{filename}.exe" else: filename
+
+when defined(linux):
+  proc warn(msg: string) =
+    stderr.write "Warning: "
+    stderr.writeLine msg
+
+proc getCompilationOptions: seq[string] =
+  result = @[
     "",
     "-d:release",
     "-d:danger",
@@ -25,23 +25,48 @@ const
     "-d:danger --passC:-flto --passL:-flto --passL:-s",
     "-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc",
     "-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size",
-    &"-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size {muslGcc}",
-    &"-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size {muslClang}",
-    &"-d:danger --gc:arc --opt:size {zig}",
   ]
 
+  when defined(linux):
+    if findExe("musl-gcc").len > 0:
+      const muslGcc =
+        "--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static"
+      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size {muslGcc}"
+    else:
+      warn("musl-gcc not found")
+
+    if findExe("musl-clang").len > 0:
+      const muslClang =
+        "--cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static"
+      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size {muslClang}"
+    else:
+      warn("musl-clang not found")
+
+    if findExe("zig").len > 0:
+      const pathZigcc = currentSourcePath().parentDir() / "zigcc"
+      const zig =
+        "--panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler " &
+        &"--cc=clang --clang.exe='{pathZigcc}' --clang.linkerexe='{pathZigcc}' " &
+        "--passC:'-flto -target x86_64-linux-musl' " &
+        "--passL:'-flto -target x86_64-linux-musl'"
+      result.add &"-d:danger --gc:arc --opt:size {zig}"
+    else:
+      warn("zig not found")
+
 proc main =
-  for i, opts in options:
+  let options = getCompilationOptions()
+  for opts in options:
     let cmd = fmt"nim c --skipParentCfg --skipProjCfg {opts} {filename}"
     execAndCheck(cmd)
 
     # strip the zigcc binary, where `--passL:-s` doesn't work.
-    if i == options.high:
+    if "zigcc" in opts:
       execAndCheck(&"strip -s -R .comment {filename}")
 
-    let binarySize = getFileSize(filename) div 1000
+    let binarySize = getFileSize(binaryPath) div 1000
     echo &"{binarySize:>3} kB {opts}"
-    doAssert execCmdEx(&"./{filename}") == ("Hello, World!\n", 0)
+    let cmdRunHello = when defined(windows): binaryPath else: &"./{binaryPath}"
+    doAssert execCmdEx(cmdRunHello) == ("Hello, World!\n", 0)
 
 when isMainModule:
   main()
