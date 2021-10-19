@@ -1,0 +1,48 @@
+name: ci
+
+on:
+  push:
+    paths:
+      - "**"
+      - "!**.md"
+  pull_request:
+    paths:
+      - "**"
+      - "!**.md"
+  workflow_dispatch:
+
+jobs:
+  ci:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        nim: ['version-1-6']
+
+    name: ${{ matrix.os }} / Nim ${{ matrix.nim }}
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Nim
+        uses: alaviss/setup-nim@f81f2a6d1505ab32f440ec9d8adbb81e949d3bf0 # 0.1.1
+        with:
+          path: 'nim'
+          version: 'version-1-6'
+
+      - name: Run `nim --version`
+        run: nim --version
+
+      - name: 'Linux: install musl and zig'
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install musl-dev musl-tools
+          sudo snap install zig --classic --beta
+
+      - name: Compile `build.nim`
+        run: nim c --styleCheck:error ./build.nim
+
+      - name: Run `build`
+        run: ./build
