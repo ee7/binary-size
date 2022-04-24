@@ -1,46 +1,108 @@
 import std/[os, osproc, strformat, strutils]
 
+type
+  BuildKind = enum
+    bkDebug = ""
+    bkRelease = "release"
+    bkDanger = "danger"
+
+  Mm = enum
+    mmRefc = "refc"
+    mmArc = "arc"
+    mmOrc = "orc"
+
+  Opt = enum
+    optSpeed = "speed"
+    optSize = "size"
+
+  LinkingKind = enum
+    lkDynamic
+    lkStaticMuslGcc
+    lkStaticMuslClang
+    lkStaticMuslZig
+
+  CompileOptions = object
+    buildKind: BuildKind
+    flto: bool
+    strip: bool
+    mm: Mm
+    opt: Opt
+    linkingKind: LinkingKind
+
+func init(T: typedesc[CompileOptions],
+          buildKind = bkDebug,
+          flto = false,
+          strip = false,
+          mm = mmRefc,
+          opt = optSpeed,
+          linkingKind = lkDynamic): T =
+  T(
+    buildKind: buildKind,
+    flto: flto,
+    strip: strip,
+    mm: mm,
+    opt: opt,
+    linkingKind: linkingKind,
+  )
+
 when defined(linux):
   proc warn(msg: string) =
     stderr.write "Warning: "
     stderr.writeLine msg
 
-proc getCompilationOptions: seq[string] =
+proc getCompilationOptions: seq[CompileOptions] =
   result = @[
-    "",
-    "-d:release",
-    "-d:danger",
-    "-d:danger --passC:-flto --passL:-flto",
-    "-d:danger --passC:-flto --passL:-flto --passL:-s",
-    "-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc",
-    "-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size",
+    CompileOptions.init(),
+    CompileOptions.init(bkRelease),
+    CompileOptions.init(bkDanger),
+    CompileOptions.init(bkDanger, flto = true),
+    CompileOptions.init(bkDanger, flto = true, strip = true),
+    CompileOptions.init(bkDanger, flto = true, strip = true, mmArc),
+    CompileOptions.init(bkDanger, flto = true, strip = true, mmArc, optSize),
   ]
 
   when defined(linux):
     if findExe("musl-gcc").len > 0:
-      const muslGcc =
-        "--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static"
-      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size {muslGcc}"
+      result.add CompileOptions.init(bkDanger, flto = true, strip = true, mmArc,
+                                     optSize, lkStaticMuslGcc)
     else:
       warn("musl-gcc not found")
 
     if findExe("musl-clang").len > 0:
-      const muslClang =
-        "--cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static"
-      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size {muslClang}"
+      result.add CompileOptions.init(bkDanger, flto = true, strip = true, mmArc,
+                                     optSize, lkStaticMuslClang)
     else:
       warn("musl-clang not found")
 
     if findExe("zig").len > 0:
-      const pathZigcc = currentSourcePath().parentDir() / "zigcc"
-      const zig =
-        "--panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler " &
-        &"--cc=clang --clang.exe='{pathZigcc}' --clang.linkerexe='{pathZigcc}' " &
-        "--passC:'-flto -target x86_64-linux-musl' " &
-        "--passL:'-flto -target x86_64-linux-musl'"
-      result.add &"-d:danger --mm:arc --opt:size {zig}"
+      result.add CompileOptions.init(bkDanger, mm = mmArc, opt = optSize,
+                                     linkingKind = lkStaticMuslZig)
     else:
       warn("zig not found")
+
+func `$`(c: CompileOptions): string =
+  result = if c.buildKind == bkDebug: "" else: &"-d:{c.buildKind}"
+  if c.flto:
+    result.add " --passC:-flto --passL:-flto"
+  if c.strip:
+    result.add " --passL:-s"
+  if c.mm in {mmArc, mmOrc}:
+    result.add &" --mm:{c.mm}"
+  if c.opt == optSize:
+    result.add &" --opt:{c.opt}"
+  case c.linkingKind
+    of lkDynamic:
+      discard
+    of lkStaticMuslGcc:
+      result.add " --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static"
+    of lkStaticMuslClang:
+      result.add " --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static"
+    of lkStaticMuslZig:
+      const pathZigcc = currentSourcePath().parentDir() / "zigcc"
+      result.add " --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler" &
+                &" --cc=clang --clang.exe='{pathZigcc}' --clang.linkerexe='{pathZigcc}'" &
+                 " --passC:'-flto -target x86_64-linux-musl'" &
+                 " --passL:'-flto -target x86_64-linux-musl'"
 
 proc execAndCheck(cmd: string) =
   ## Runs `cmd`, and raises an exception if the exit code is non-zero.
@@ -54,15 +116,16 @@ proc main =
   const binaryPath = when defined(windows): &"{filename}.exe" else: filename
   let options = getCompilationOptions()
   for opts in options:
-    let cmd = fmt"nim c --skipParentCfg --skipProjCfg {opts} {filename}"
+    let s = $opts
+    let cmd = fmt"nim c --skipParentCfg --skipProjCfg {s} {filename}"
     execAndCheck(cmd)
 
     # strip the zigcc binary, where `--passL:-s` doesn't work.
-    if "zigcc" in opts:
+    if opts.linkingKind == lkStaticMuslZig:
       execAndCheck(&"strip -s -R .comment {filename}")
 
     let binarySize = getFileSize(binaryPath).float / 1024
-    echo &"{binarySize:>5.1f} KiB {opts}"
+    echo &"{binarySize:>5.1f} KiB {s}"
     let cmdRunHello = when defined(windows): binaryPath else: &"./{binaryPath}"
     doAssert execCmdEx(cmdRunHello) == ("Hello, World!\n", 0)
 
