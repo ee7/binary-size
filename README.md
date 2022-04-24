@@ -31,16 +31,16 @@ As of 2022-04-24 on amd64 with:
 
 | Binary size | Compilation options |
 | ----------: | ------------------- |
-|    110.1 kB | (none) |
-|     84.2 kB | `-d:release` |
-|     87.3 kB | `-d:danger` |
-|     53.7 kB | `-d:danger --passC:-flto --passL:-flto` |
-|     47.4 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|     22.8 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
-|     18.7 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
-|     22.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static` |
-|     18.1 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static` |
-|      4.8 kB | `-d:danger --mm:arc --opt:size --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='/foo/zigcc' --clang.linkerexe='/foo/zigcc' --passC:'-flto -target x86_64-linux-musl' --passL:'-flto -target x86_64-linux-musl'` |
+|   107.5 KiB | (none) |
+|    82.2 KiB | `-d:release` |
+|    85.2 KiB | `-d:danger` |
+|    52.4 KiB | `-d:danger --passC:-flto --passL:-flto` |
+|    46.3 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
+|    22.2 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
+|    18.2 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
+|    21.7 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static` |
+|    17.7 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static` |
+|     4.7 KiB | `-d:danger --mm:arc --opt:size --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='/foo/zigcc' --clang.linkerexe='/foo/zigcc' --passC:'-flto -target x86_64-linux-musl' --passL:'-flto -target x86_64-linux-musl'` |
 
 ### OpenBSD 7.1 (released 2022-04-21)
 
@@ -50,10 +50,10 @@ As of 2022-04-24 on amd64 with:
 
 | Binary size | Compilation options |
 | ----------: | ------------------- |
-|    119.8 kB | (none) |
-|     68.3 kB | `-d:release` |
-|     63.0 kB | `-d:danger` |
-|     26.9 kB | `-d:danger --passC:-flto --passL:-flto` |
-|     21.5 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
-|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
+|   117.0 KiB | (none) |
+|    66.7 KiB | `-d:release` |
+|    61.5 KiB | `-d:danger` |
+|    26.3 KiB | `-d:danger --passC:-flto --passL:-flto` |
+|    21.0 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
+|     7.1 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
+|     7.1 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
