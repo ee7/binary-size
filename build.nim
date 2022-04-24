@@ -7,10 +7,6 @@ proc execAndCheck(cmd: string) =
     stderr.writeLine output
     raise newException(OSError, "Command returned non-zero exit code: " & cmd)
 
-const
-  filename = "hello"
-  binaryPath = when defined(windows): &"{filename}.exe" else: filename
-
 when defined(linux):
   proc warn(msg: string) =
     stderr.write "Warning: "
@@ -54,6 +50,8 @@ proc getCompilationOptions: seq[string] =
       warn("zig not found")
 
 proc main =
+  const filename = "hello"
+  const binaryPath = when defined(windows): &"{filename}.exe" else: filename
   let options = getCompilationOptions()
   for opts in options:
     let cmd = fmt"nim c --skipParentCfg --skipProjCfg {opts} {filename}"
