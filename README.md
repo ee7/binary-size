@@ -36,11 +36,11 @@ As of 2021-10-19 on amd64 with:
 |       87 kB | `-d:danger` |
 |       53 kB | `-d:danger --passC:-flto --passL:-flto` |
 |       47 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|       22 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc` |
-|       18 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size` |
-|       22 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static` |
-|       18 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static ` |
-|      4.8 kB | `-d:danger --gc:arc --opt:size --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='/foo/zigcc' --clang.linkerexe='/foo/zigcc' --passC:'-flto -target x86_64-linux-musl' --passL:'-flto -target x86_64-linux-musl'` |
+|       22 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
+|       18 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
+|       22 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static` |
+|       18 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static ` |
+|      4.8 kB | `-d:danger --mm:arc --opt:size --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='/foo/zigcc' --clang.linkerexe='/foo/zigcc' --passC:'-flto -target x86_64-linux-musl' --passL:'-flto -target x86_64-linux-musl'` |
 
 ### OpenBSD 7.0 (released 2021-10-14)
 
@@ -55,5 +55,5 @@ As of 2021-10-19 on amd64 with:
 |       63 kB | `-d:danger` |
 |       27 kB | `-d:danger --passC:-flto --passL:-flto` |
 |       21 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc` |
-|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size` |
+|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
+|      7.2 kB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |

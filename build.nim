@@ -23,22 +23,22 @@ proc getCompilationOptions: seq[string] =
     "-d:danger",
     "-d:danger --passC:-flto --passL:-flto",
     "-d:danger --passC:-flto --passL:-flto --passL:-s",
-    "-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc",
-    "-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size",
+    "-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc",
+    "-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size",
   ]
 
   when defined(linux):
     if findExe("musl-gcc").len > 0:
       const muslGcc =
         "--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static"
-      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size {muslGcc}"
+      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size {muslGcc}"
     else:
       warn("musl-gcc not found")
 
     if findExe("musl-clang").len > 0:
       const muslClang =
         "--cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static"
-      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --gc:arc --opt:size {muslClang}"
+      result.add &"-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size {muslClang}"
     else:
       warn("musl-clang not found")
 
@@ -49,7 +49,7 @@ proc getCompilationOptions: seq[string] =
         &"--cc=clang --clang.exe='{pathZigcc}' --clang.linkerexe='{pathZigcc}' " &
         "--passC:'-flto -target x86_64-linux-musl' " &
         "--passL:'-flto -target x86_64-linux-musl'"
-      result.add &"-d:danger --gc:arc --opt:size {zig}"
+      result.add &"-d:danger --mm:arc --opt:size {zig}"
     else:
       warn("zig not found")
 
