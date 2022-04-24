@@ -61,8 +61,8 @@ proc main =
     if "zigcc" in opts:
       execAndCheck(&"strip -s -R .comment {filename}")
 
-    let binarySize = getFileSize(binaryPath).float / 1000
-    echo &"{binarySize:>5.1f} kB {opts}"
+    let binarySize = getFileSize(binaryPath).float / 1024
+    echo &"{binarySize:>5.1f} KiB {opts}"
     let cmdRunHello = when defined(windows): binaryPath else: &"./{binaryPath}"
     doAssert execCmdEx(cmdRunHello) == ("Hello, World!\n", 0)
 
