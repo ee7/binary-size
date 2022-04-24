@@ -1,12 +1,5 @@
 import std/[os, osproc, strformat, strutils]
 
-proc execAndCheck(cmd: string) =
-  ## Runs `cmd`, and raises an exception if the exit code is non-zero.
-  let (output, exitCode) = execCmdEx(cmd)
-  if exitCode != 0:
-    stderr.writeLine output
-    raise newException(OSError, "Command returned non-zero exit code: " & cmd)
-
 when defined(linux):
   proc warn(msg: string) =
     stderr.write "Warning: "
@@ -48,6 +41,13 @@ proc getCompilationOptions: seq[string] =
       result.add &"-d:danger --mm:arc --opt:size {zig}"
     else:
       warn("zig not found")
+
+proc execAndCheck(cmd: string) =
+  ## Runs `cmd`, and raises an exception if the exit code is non-zero.
+  let (output, exitCode) = execCmdEx(cmd)
+  if exitCode != 0:
+    stderr.writeLine output
+    raise newException(OSError, "Command returned non-zero exit code: " & cmd)
 
 proc main =
   const filename = "hello"
