@@ -32,18 +32,20 @@ Details:
 - musl 1.2.3
 - zig 0.9.1
 
-| Binary size | Compilation options |
-| ----------: | ------------------- |
-|   107.5 KiB | (none) |
-|    82.2 KiB | `-d:release` |
-|    85.2 KiB | `-d:danger` |
-|    52.4 KiB | `-d:danger --passC:-flto --passL:-flto` |
-|    46.3 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|    22.2 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
-|    18.2 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
-|    21.7 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static` |
-|    17.7 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size --cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static` |
-|     4.7 KiB | `-d:danger --mm:arc --opt:size --panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='/foo/zigcc' --clang.linkerexe='/foo/zigcc' --passC:'-flto -target x86_64-linux-musl' --passL:'-flto -target x86_64-linux-musl'` |
+| Binary size | Build kind   | flto | strip | mm   | opt   | C compiler | linking             |
+| ----------: | ------------ | :--: | :---: | ---- | ----- | ---------- | ------------------- |
+|   107.5 KiB | debug        |      |       | refc | speed | gcc        | dynamic             |
+|    82.2 KiB | `-d:release` |      |       | refc | speed | gcc        | dynamic             |
+|    85.2 KiB | `-d:danger`  |      |       | refc | speed | gcc        | dynamic             |
+|    52.4 KiB | `-d:danger`  |  ✔️   |       | refc | speed | gcc        | dynamic             |
+|    46.3 KiB | `-d:danger`  |  ✔️   |  ✔️    | refc | speed | gcc        | dynamic             |
+|    22.2 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | speed | gcc        | dynamic             |
+|    18.2 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | gcc        | dynamic             |
+|    21.7 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | gcc        | static (musl-gcc)   |
+|    17.7 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | clang      | static (musl-clang) |
+|     4.7 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | clang      | static (zig cc)[^1] |
+
+[^1]: Extra options: `--panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler`
 
 ### macOS 11
 
@@ -51,15 +53,15 @@ Details:
 
 - clang 13.0.0
 
-| Binary size | Compilation options |
-| ----------: | ------------------- |
-|   126.2 KiB | (none) |
-|    89.5 KiB | `-d:release` |
-|    72.5 KiB | `-d:danger` |
-|    51.3 KiB | `-d:danger --passC:-flto --passL:-flto` |
-|    48.9 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|    48.6 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
-|    48.6 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
+| Binary size | Build kind   | flto | strip | mm   | opt   | C compiler | linking |
+| ----------: | ------------ | :--: | :---: | ---- | ----- | ---------- | ------- |
+|   126.2 KiB | debug        |      |       | refc | speed | clang      | dynamic |
+|    89.5 KiB | `-d:release` |      |       | refc | speed | clang      | dynamic |
+|    72.5 KiB | `-d:danger`  |      |       | refc | speed | clang      | dynamic |
+|    51.3 KiB | `-d:danger`  |  ✔️   |       | refc | speed | clang      | dynamic |
+|    48.9 KiB | `-d:danger`  |  ✔️   |  ✔️    | refc | speed | clang      | dynamic |
+|    48.6 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | speed | clang      | dynamic |
+|    48.6 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | clang      | dynamic |
 
 ### OpenBSD 7.1 (released 2022-04-21)
 
@@ -67,15 +69,15 @@ Details:
 
 - clang 13.0.0
 
-| Binary size | Compilation options |
-| ----------: | ------------------- |
-|   117.0 KiB | (none) |
-|    66.7 KiB | `-d:release` |
-|    61.5 KiB | `-d:danger` |
-|    26.3 KiB | `-d:danger --passC:-flto --passL:-flto` |
-|    21.0 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|     7.1 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
-|     7.1 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
+| Binary size | Build kind   | flto | strip | mm   | opt   | C compiler | linking |
+| ----------: | ------------ | :--: | :---: | ---- | ----- | ---------- | ------- |
+|   117.0 KiB | debug        |      |       | refc | speed | clang      | dynamic |
+|    66.7 KiB | `-d:release` |      |       | refc | speed | clang      | dynamic |
+|    61.5 KiB | `-d:danger`  |      |       | refc | speed | clang      | dynamic |
+|    26.3 KiB | `-d:danger`  |  ✔️   |       | refc | speed | clang      | dynamic |
+|    21.0 KiB | `-d:danger`  |  ✔️   |  ✔️    | refc | speed | clang      | dynamic |
+|     7.1 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | speed | clang      | dynamic |
+|     7.1 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | clang      | dynamic |
 
 ### Windows Server 2022
 
@@ -83,12 +85,12 @@ Details:
 
 - Mingw-w64 8.1.0
 
-| Binary size | Compilation options |
-| ----------: | ------------------- |
-|   146.1 KiB | (none) |
-|   114.0 KiB | `-d:release` |
-|   108.3 KiB | `-d:danger` |
-|    97.1 KiB | `-d:danger --passC:-flto --passL:-flto` |
-|    47.5 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s` |
-|    33.0 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc` |
-|    25.0 KiB | `-d:danger --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size` |
+| Binary size | Build kind   | flto | strip | mm   | opt   | C compiler | linking |
+| ----------: | ------------ | :--: | :---: | ---- | ----- | ---------- | ------- |
+|   146.1 KiB | debug        |      |       | refc | speed | Mingw-w64  | dynamic |
+|   114.0 KiB | `-d:release` |      |       | refc | speed | Mingw-w64  | dynamic |
+|   108.3 KiB | `-d:danger`  |      |       | refc | speed | Mingw-w64  | dynamic |
+|    97.1 KiB | `-d:danger`  |  ✔️   |       | refc | speed | Mingw-w64  | dynamic |
+|    47.5 KiB | `-d:danger`  |  ✔️   |  ✔️    | refc | speed | Mingw-w64  | dynamic |
+|    33.0 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | speed | Mingw-w64  | dynamic |
+|    25.0 KiB | `-d:danger`  |  ✔️   |  ✔️    | arc  | size  | Mingw-w64  | dynamic |
