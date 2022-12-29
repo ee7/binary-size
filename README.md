@@ -20,7 +20,7 @@ with various sets of compilation options.
 
 ## Results
 
-All results from 2022-04-24 on amd64 with Nim 1.6.4 (released 2022-02-08).
+All results from 2022-04-24 on x86_64 with Nim 1.6.4 (released 2022-02-08).
 
 ### Arch Linux
 
