@@ -26,6 +26,7 @@ All results from 2022-04-24 on x86_64 with Nim 1.6.4 (released 2022-02-08).
 
 Details:
 
+- glibc 2.35
 - gcc 11.2.0
 - clang 13.0.1
 - musl 1.2.3
