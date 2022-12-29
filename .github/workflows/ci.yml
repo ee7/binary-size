@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-20.04', 'macos-11', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-11', 'windows-2022']
         nim: ['version-1-6']
 
     name: ${{ matrix.os }} / Nim ${{ matrix.nim }}
