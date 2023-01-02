@@ -20,16 +20,16 @@ with various sets of compilation options.
 
 ## Results
 
-| release[^1] | LTO[^2] | strip[^3] | size[^4] | static           |     Linux |     macOS |   Windows |
-| :---------: | :-----: | :-------: | :------: | :--------------- | --------: | --------: | --------: |
-|             |         |           |          |                  | 103.1 KiB | 109.3 KiB | 186.9 KiB |
-|      ✔️      |         |           |          |                  |  72.3 KiB |  71.6 KiB | 149.7 KiB |
-|      ✔️      |    ✔️    |           |          |                  |  44.6 KiB |  67.6 KiB | 131.2 KiB |
-|      ✔️      |    ✔️    |     ✔️     |          |                  |  34.5 KiB |  65.1 KiB |  79.0 KiB |
-|      ✔️      |    ✔️    |     ✔️     |    ✔️     |                  |  26.5 KiB |  65.1 KiB |  64.0 KiB |
-|      ✔️      |    ✔️    |     ✔️     |    ✔️     | `musl-gcc`[^5]   |  29.9 KiB |           |           |
-|      ✔️      |    ✔️    |     ✔️     |    ✔️     | `musl-clang`[^6] |  30.0 KiB |           |           |
-|      ✔️      |    ✔️    |     ✔️     |    ✔️     | `zig cc`[^7]     |   6.5 KiB |           |           |
+| -d:release[^1] | LTO[^2] | strip[^3] | --opt:size[^4]     | statically link      |     Linux |     macOS |   Windows |
+| :------------: | :-----: | :-------: | :----------------: | :------------------- | --------: | --------: | --------: |
+|                |         |           |                    |                      | 103.1 KiB | 109.3 KiB | 186.9 KiB |
+|       ✔️        |         |           |                    |                      |  72.3 KiB |  71.6 KiB | 149.7 KiB |
+|       ✔️        |    ✔️    |           |                    |                      |  44.6 KiB |  67.6 KiB | 131.2 KiB |
+|       ✔️        |    ✔️    |     ✔️     |                    |                      |  34.5 KiB |  65.1 KiB |  79.0 KiB |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          |                      |  26.5 KiB |  65.1 KiB |  64.0 KiB |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `musl-gcc`[^5]   |  29.9 KiB |           |           |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `musl-clang`[^6] |  30.0 KiB |           |           |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `zig cc`[^7]     |   6.5 KiB |           |           |
 
 [^1]: Perform a release build: `-d:release` (the default is a debug build)
 [^2]: Enable Link-Time Optimization: `--passC:-flto --passL:-flto`
