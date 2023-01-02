@@ -20,21 +20,24 @@ with various sets of compilation options.
 
 ## Results
 
-| Compilation options                                                |     Linux |     macOS |   OpenBSD |   Windows |
-| ------------------------------------------------------------------ | --------: | --------: | --------: | --------: |
-| (none)                                                             | 103.1 KiB | 109.3 KiB | 108.8 KiB | 186.9 KiB |
-| `-d:release`                                                       |  72.3 KiB |  71.6 KiB |  54.7 KiB | 149.7 KiB |
-| `-d:release --passC:-flto --passL:-flto`                           |  44.6 KiB |  67.6 KiB |  35.0 KiB | 131.2 KiB |
-| `-d:release --passC:-flto --passL:-flto --passL:-s`                |  34.5 KiB |  65.1 KiB |  29.3 KiB |  79.0 KiB |
-| `-d:release --passC:-flto --passL:-flto --passL:-s --opt:size`[^1] |  26.5 KiB |  65.1 KiB |  25.6 KiB |  64.0 KiB |
-| and static link via `musl-gcc`[^2]                                 |  29.9 KiB |           |           |           |
-| and static link via `musl-clang`[^3]                               |  30.0 KiB |           |           |           |
-| and static link via `zig cc`[^4]                                   |   6.5 KiB |           |           |           |
+| release[^1] | LTO[^2] | strip[^3] | size[^4] | static           |     Linux |     macOS |   OpenBSD |   Windows |
+| :---------: | :-----: | :-------: | :------: | :--------------- | --------: | --------: | --------: | --------: |
+|             |         |           |          |                  | 103.1 KiB | 109.3 KiB | 108.8 KiB | 186.9 KiB |
+|      ✔️      |         |           |          |                  |  72.3 KiB |  71.6 KiB |  54.7 KiB | 149.7 KiB |
+|      ✔️      |    ✔️    |           |          |                  |  44.6 KiB |  67.6 KiB |  35.0 KiB | 131.2 KiB |
+|      ✔️      |    ✔️    |     ✔️     |          |                  |  34.5 KiB |  65.1 KiB |  29.3 KiB |  79.0 KiB |
+|      ✔️      |    ✔️    |     ✔️     |    ✔️     |                  |  26.5 KiB |  65.1 KiB |  25.6 KiB |  64.0 KiB |
+|      ✔️      |    ✔️    |     ✔️     |    ✔️     | `musl-gcc`[^5]   |  29.9 KiB |           |           |           |
+|      ✔️      |    ✔️    |     ✔️     |    ✔️     | `musl-clang`[^6] |  30.0 KiB |           |           |           |
+|      ✔️      |    ✔️    |     ✔️     |    ✔️     | `zig cc`[^7]     |   6.5 KiB |           |           |           |
 
-[^1]: The "base options" for the below rows
-[^2]: The "base options", plus `--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static`
-[^3]: The "base options", plus `--cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static`
-[^4]: The "base options", plus `--panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='zigcc' --clang.linkerexe='zigcc' --passC:'-target x86_64-linux-musl' --passL:'-target x86_64-linux-musl'`
+[^1]: Perform a release build: `-d:release` (the default is a debug build)
+[^2]: Enable Link-Time Optimization: `--passC:-flto --passL:-flto`
+[^3]: Remove debug symbols: `--passL:-s`
+[^4]: Optimize for reduced binary size: `--opt:size` (the default is `--opt:speed`)
+[^5]: Add `--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static`
+[^6]: Add `--cc:clang --clang.exe:musl-clang --clang.linkerexe:musl-clang --passL:-static`
+[^7]: Add `--panics:on -d:useMalloc --os:any -d:posix -d:noSignalHandler --cc=clang --clang.exe='zigcc' --clang.linkerexe='zigcc' --passC:'-target x86_64-linux-musl' --passL:'-target x86_64-linux-musl'`
 
 ### Details
 
