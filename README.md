@@ -20,17 +20,16 @@ with various sets of compilation options.
 
 ## Results
 
-| Compilation options                                                         |     Linux |     macOS |   OpenBSD |   Windows |
-| --------------------------------------------------------------------------- | --------: | --------: | --------: | --------: |
-| (none)                                                                      | 112.5 KiB | 126.3 KiB | 117.5 KiB | 180.9 KiB |
-| `-d:release`                                                                |  95.1 KiB |  89.6 KiB |  68.7 KiB | 161.0 KiB |
-| `-d:release --passC:-flto --passL:-flto`                                    |  66.0 KiB |  69.2 KiB |  43.2 KiB | 140.4 KiB |
-| `-d:release --passC:-flto --passL:-flto --passL:-s`                         |  54.2 KiB |  65.1 KiB |  34.9 KiB |  86.5 KiB |
-| `-d:release --passC:-flto --passL:-flto --passL:-s --mm:arc`                |  26.2 KiB |  65.0 KiB |  23.3 KiB |  65.0 KiB |
-| `-d:release --passC:-flto --passL:-flto --passL:-s --mm:arc --opt:size`[^1] |  22.2 KiB |  49.0 KiB |  19.6 KiB |  58.0 KiB |
-| and static link via `musl-gcc`[^2]                                          |  25.7 KiB |           |           |           |
-| and static link via `musl-clang`[^3]                                        |  25.8 KiB |           |           |           |
-| and static link via `zig cc`[^4]                                            |   6.5 KiB |           |           |           |
+| Compilation options                                                         |    Linux |     macOS |   OpenBSD |   Windows |
+| --------------------------------------------------------------------------- | -------: | --------: | --------: | --------: |
+| `--mm:orc`                                                                  | 98.3 KiB | 108.2 KiB | 100.0 KiB | 168.2 KiB |
+| `--mm:orc -d:release`                                                       | 67.5 KiB |  70.6 KiB |  53.3 KiB | 141.3 KiB |
+| `--mm:orc -d:release --passC:-flto --passL:-flto`                           | 43.7 KiB |  67.0 KiB |  32.3 KiB | 121.6 KiB |
+| `--mm:orc -d:release --passC:-flto --passL:-flto --passL:-s`                | 34.2 KiB |  65.0 KiB |  27.3 KiB |  71.0 KiB |
+| `--mm:orc -d:release --passC:-flto --passL:-flto --passL:-s --opt:size`[^1] | 26.2 KiB |  49.1 KiB |  23.6 KiB |  61.5 KiB |
+| and static link via `musl-gcc`[^2]                                          | 25.7 KiB |           |           |           |
+| and static link via `musl-clang`[^3]                                        | 29.8 KiB |           |           |           |
+| and static link via `zig cc`[^4]                                            |  6.5 KiB |           |           |           |
 
 [^1]: The "base options" for the below rows
 [^2]: The "base options", plus `--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static`

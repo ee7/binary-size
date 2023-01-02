@@ -52,29 +52,28 @@ when defined(linux):
 
 proc getCompilationOptions: seq[CompileOptions] =
   result = @[
-    CompileOptions.init(),
-    CompileOptions.init(bkRelease),
-    CompileOptions.init(bkRelease, flto = true),
-    CompileOptions.init(bkRelease, flto = true, strip = true),
-    CompileOptions.init(bkRelease, flto = true, strip = true, mmArc),
-    CompileOptions.init(bkRelease, flto = true, strip = true, mmArc, optSize),
+    CompileOptions.init(mm = mmOrc),
+    CompileOptions.init(bkRelease, mm = mmOrc),
+    CompileOptions.init(bkRelease, flto = true, mm = mmOrc),
+    CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc),
+    CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc, optSize),
   ]
 
   when defined(linux):
     if findExe("musl-gcc").len > 0:
-      result.add CompileOptions.init(bkRelease, flto = true, strip = true, mmArc,
+      result.add CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc,
                                      optSize, lkStaticMuslGcc)
     else:
       warn("musl-gcc not found")
 
     if findExe("musl-clang").len > 0:
-      result.add CompileOptions.init(bkRelease, flto = true, strip = true, mmArc,
+      result.add CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc,
                                      optSize, lkStaticMuslClang)
     else:
       warn("musl-clang not found")
 
     if findExe("zig").len > 0:
-      result.add CompileOptions.init(bkRelease, mm = mmArc, opt = optSize,
+      result.add CompileOptions.init(bkRelease, mm = mmOrc, opt = optSize,
                                      linkingKind = lkStaticMuslZig)
     else:
       warn("zig not found")
