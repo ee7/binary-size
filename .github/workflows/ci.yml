@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        nim: ['version-1-6']
+        nim: ['version-2-0']
 
     name: ${{ matrix.os }} / Nim ${{ matrix.nim }}
     runs-on: ${{ matrix.os }}
@@ -30,7 +30,7 @@ jobs:
         uses: alaviss/setup-nim@f81f2a6d1505ab32f440ec9d8adbb81e949d3bf0 # 0.1.1
         with:
           path: 'nim'
-          version: 'version-2-0'
+          version: ${{ matrix.nim }}
 
       - name: Run `nim --version`
         run: nim --version
