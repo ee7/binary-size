@@ -30,7 +30,7 @@ jobs:
         uses: alaviss/setup-nim@f81f2a6d1505ab32f440ec9d8adbb81e949d3bf0 # 0.1.1
         with:
           path: 'nim'
-          version: 'version-1-6'
+          version: 'version-2-0'
 
       - name: Run `nim --version`
         run: nim --version

@@ -20,16 +20,16 @@ with various sets of compilation options.
 
 ## Results
 
-| Compilation options                                                         |    Linux |     macOS |   OpenBSD |   Windows |
-| --------------------------------------------------------------------------- | -------: | --------: | --------: | --------: |
-| `--mm:orc`                                                                  | 98.3 KiB | 108.2 KiB | 100.0 KiB | 168.2 KiB |
-| `--mm:orc -d:release`                                                       | 67.5 KiB |  70.6 KiB |  53.3 KiB | 141.3 KiB |
-| `--mm:orc -d:release --passC:-flto --passL:-flto`                           | 43.7 KiB |  67.0 KiB |  32.3 KiB | 121.6 KiB |
-| `--mm:orc -d:release --passC:-flto --passL:-flto --passL:-s`                | 34.2 KiB |  65.0 KiB |  27.3 KiB |  71.0 KiB |
-| `--mm:orc -d:release --passC:-flto --passL:-flto --passL:-s --opt:size`[^1] | 26.2 KiB |  49.1 KiB |  23.6 KiB |  61.5 KiB |
-| and static link via `musl-gcc`[^2]                                          | 25.7 KiB |           |           |           |
-| and static link via `musl-clang`[^3]                                        | 29.8 KiB |           |           |           |
-| and static link via `zig cc`[^4]                                            |  6.5 KiB |           |           |           |
+| Compilation options                                                |     Linux |     macOS |   OpenBSD |   Windows |
+| ------------------------------------------------------------------ | --------: | --------: | --------: | --------: |
+| (none)                                                             | 103.1 KiB | 109.3 KiB | 108.8 KiB | 186.9 KiB |
+| `-d:release`                                                       |  72.3 KiB |  71.6 KiB |  54.7 KiB | 149.7 KiB |
+| `-d:release --passC:-flto --passL:-flto`                           |  44.6 KiB |  67.6 KiB |  35.0 KiB | 131.2 KiB |
+| `-d:release --passC:-flto --passL:-flto --passL:-s`                |  34.5 KiB |  65.1 KiB |  29.3 KiB |  79.0 KiB |
+| `-d:release --passC:-flto --passL:-flto --passL:-s --opt:size`[^1] |  26.5 KiB |  65.1 KiB |  25.6 KiB |  64.0 KiB |
+| and static link via `musl-gcc`[^2]                                 |  29.9 KiB |           |           |           |
+| and static link via `musl-clang`[^3]                               |  30.0 KiB |           |           |           |
+| and static link via `zig cc`[^4]                                   |   6.5 KiB |           |           |           |
 
 [^1]: The "base options" for the below rows
 [^2]: The "base options", plus `--cc:gcc --gcc.exe:musl-gcc --gcc.linkerexe:musl-gcc --passL:-static`
@@ -38,7 +38,7 @@ with various sets of compilation options.
 
 ### Details
 
-All results from 2023-01-02 on x86_64 with Nim 1.6.10 (released 2022-11-23).
+All results from 2023-01-02 on x86_64 with Nim 2.0 nightly release 2022-12-29 (corresponding to a Nim compiler built from commit [nim-lang/Nim@`7f6681b`](https://github.com/nim-lang/Nim/commit/7f6681b4c4ccc0dc43fd256280be4c3ad3c773e5)).
 
 #### Linux
 

@@ -7,9 +7,9 @@ type
     bkDanger = "danger"
 
   Mm = enum
-    mmRefc = "refc"
-    mmArc = "arc"
     mmOrc = "orc"
+    mmArc = "arc"
+    mmRefc = "refc"
 
   Opt = enum
     optSpeed = "speed"
@@ -33,7 +33,7 @@ func init(T: typedesc[CompileOptions],
           buildKind = bkDebug,
           flto = false,
           strip = false,
-          mm = mmRefc,
+          mm = mmOrc,
           opt = optSpeed,
           linkingKind = lkDynamic): T =
   T(
@@ -52,28 +52,30 @@ when defined(linux):
 
 proc getCompilationOptions: seq[CompileOptions] =
   result = @[
-    CompileOptions.init(mm = mmOrc),
-    CompileOptions.init(bkRelease, mm = mmOrc),
-    CompileOptions.init(bkRelease, flto = true, mm = mmOrc),
-    CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc),
-    CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc, optSize),
+    CompileOptions.init(),
+    CompileOptions.init(bkRelease),
+    CompileOptions.init(bkRelease, flto = true),
+    CompileOptions.init(bkRelease, flto = true, strip = true),
+    CompileOptions.init(bkRelease, flto = true, strip = true, opt = optSize),
   ]
 
   when defined(linux):
     if findExe("musl-gcc").len > 0:
-      result.add CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc,
-                                     optSize, lkStaticMuslGcc)
+      result.add CompileOptions.init(bkRelease, flto = true, strip = true,
+                                     opt = optSize,
+                                     linkingKind = lkStaticMuslGcc)
     else:
       warn("musl-gcc not found")
 
     if findExe("musl-clang").len > 0:
-      result.add CompileOptions.init(bkRelease, flto = true, strip = true, mmOrc,
-                                     optSize, lkStaticMuslClang)
+      result.add CompileOptions.init(bkRelease, flto = true, strip = true,
+                                     opt = optSize,
+                                     linkingKind = lkStaticMuslClang)
     else:
       warn("musl-clang not found")
 
     if findExe("zig").len > 0:
-      result.add CompileOptions.init(bkRelease, mm = mmOrc, opt = optSize,
+      result.add CompileOptions.init(bkRelease, opt = optSize,
                                      linkingKind = lkStaticMuslZig)
     else:
       warn("zig not found")
@@ -84,7 +86,7 @@ func `$`(c: CompileOptions): string =
     result.add " --passC:-flto --passL:-flto"
   if c.strip:
     result.add " --passL:-s"
-  if c.mm in {mmArc, mmOrc}:
+  if c.mm != mmOrc:
     result.add &" --mm:{c.mm}"
   if c.opt == optSize:
     result.add &" --opt:{c.opt}"
