@@ -22,14 +22,14 @@ with various sets of compilation options.
 
 | -d:release[^1] | LTO[^2] | strip[^3] | --opt:size[^4]     | statically link      |     Linux |     macOS |   Windows |
 | :------------: | :-----: | :-------: | :----------------: | :------------------- | --------: | --------: | --------: |
-|                |         |           |                    |                      | 103.1 KiB | 109.3 KiB | 186.9 KiB |
-|       ✔️        |         |           |                    |                      |  72.3 KiB |  71.6 KiB | 149.7 KiB |
-|       ✔️        |    ✔️    |           |                    |                      |  44.6 KiB |  67.6 KiB | 131.2 KiB |
-|       ✔️        |    ✔️    |     ✔️     |                    |                      |  34.5 KiB |  65.1 KiB |  79.0 KiB |
-|       ✔️        |    ✔️    |     ✔️     |         ✔️          |                      |  26.5 KiB |  65.1 KiB |  64.0 KiB |
-|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `musl-gcc`[^5]   |  29.9 KiB |           |           |
+|                |         |           |                    |                      |  98.2 KiB | 109.4 KiB | 188.7 KiB |
+|       ✔️        |         |           |                    |                      |  67.3 KiB |  71.7 KiB | 151.5 KiB |
+|       ✔️        |    ✔️    |           |                    |                      |  39.5 KiB |  67.6 KiB | 132.0 KiB |
+|       ✔️        |    ✔️    |     ✔️     |                    |                      |  34.5 KiB |  65.1 KiB |  79.5 KiB |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          |                      |  26.5 KiB |  49.1 KiB |  64.0 KiB |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `musl-gcc`[^5]   |  30.0 KiB |           |           |
 |       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `musl-clang`[^6] |  30.0 KiB |           |           |
-|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `zig cc`[^7]     |   6.5 KiB |           |           |
+|       ✔️        |    ✔️    |     ✔️     |         ✔️          | via `zig cc`[^7]     |   6.1 KiB |           |           |
 
 [^1]: Perform a release build: `-d:release` (the default is a debug build)
 [^2]: Enable Link-Time Optimization: `--passC:-flto --passL:-flto`
@@ -41,16 +41,16 @@ with various sets of compilation options.
 
 ### Details
 
-All results from 2023-01-02 on x86_64 with Nim 2.0 nightly release 2022-12-29 (corresponding to a Nim compiler built from commit [nim-lang/Nim@`7f6681b`](https://github.com/nim-lang/Nim/commit/7f6681b4c4ccc0dc43fd256280be4c3ad3c773e5)).
+All results from 2023-03-31 on x86_64 with Nim 2.0 nightly release 2023-03-30 (corresponding to a Nim compiler built from commit [nim-lang/Nim@`2e4ba4a`](https://github.com/nim-lang/Nim/commit/2e4ba4ad93c6d9021b6de975cf7ac78e67acba26)).
 
 #### Linux
 
 - Arch Linux
-- glibc 2.36
-- gcc 12.2.0
-- clang 14.0.6
+- glibc 2.37
+- gcc 12.2.1
+- clang 15.0.7
 - musl 1.2.3
-- zig 0.10.0
+- zig 0.10.1
 
 #### macOS
 
